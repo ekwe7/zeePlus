@@ -12,5 +12,5 @@ public interface AppointmentService {
     AppointmentResponse verifyAppointmentCode(String code);
     AppointmentResponse assignDoctorToAppointment(String appointmentId, String doctorId);
     AppointmentResponse updateAppointmentStatus(String appointmentId, UpdateAppointmentStatusRequest request);
-    void cancelAppointment(String appointmentId);
+
 }

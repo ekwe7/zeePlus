@@ -30,9 +30,10 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final HospitalJpaRepository hospitalJpaRepository;
 
     @Override
-    public AppointmentResponse createAppoitmentRequest(CreateAppointmentRequest createAppointmentRequest) {
+    public AppointmentResponse createAppointmentRequest(CreateAppointmentRequest createAppointmentRequest) {
         Hospital hospital = hospitalRepository.findById(createAppointmentRequest.hospitalId())
-                .orElseThrow(() -> new ResourceNotFoundException("Hospital not found with ID: " + createAppointmentRequest.hospitalId()));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Hospital not found with ID: " + createAppointmentRequest.hospitalId()));
 
         Appointment appointment = appointmentMapper.toEntity(createAppointmentRequest, hospital);
         Appointment savedAppointmet = appointmentRepository.save(appointment);
@@ -40,10 +41,10 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     }
 
-    //Review patient symptoms (Fetch all appointments for a specific hospital)
+    // Review patient symptoms (Fetch all appointments for a specific hospital)
     @Override
-    public List<AppointmentResponse> getAppointmentByHospital(String hospitalId){
-        if(!hospitalJpaRepository.existsById(hospitalId)){
+    public List<AppointmentResponse> getAppointmentsByHospital(String hospitalId) {
+        if (!hospitalJpaRepository.existsById(hospitalId)) {
             throw new ResourceNotFoundException("Hospital not found with ID: " + hospitalId);
         }
         return appointmentRepository.findByHospitalId(hospitalId).stream()
@@ -52,13 +53,13 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentResponse verifyAppointmentCode(String appointmentCode){
+    public AppointmentResponse verifyAppointmentCode(String appointmentCode) {
         Appointment appointment = appointmentRepository.findByVerificationCode(appointmentCode.trim().toUpperCase())
                 .orElseThrow(() -> new ResourceNotFoundException("Invalide or non-existing code: " + appointmentCode));
 
         // Automatically move status to APPROVED once code is verified by hospital clerk
-        if(appointment.getAppointmentStatus() == AppointmentStatus.PENDING){
-            appointment.setAppointmentStatus(AppointmentStatus.APPROVED);
+        if (appointment.getAppointmentStatus() == AppointmentStatus.PENDING) {
+            appointment.setAppointmentStatus(AppointmentStatus.CONFIRMED);
             appointment = appointmentRepository.save(appointment);
         }
         return appointmentMapper.toAppointmentResponse(appointment);
@@ -73,7 +74,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Doctor not found with ID: " + doctorId));
 
         appointment.setDoctor(doctor);
-        appointment.setAppointmentStatus(AppointmentStatus.ASSIGNED);
+        appointment.setAppointmentStatus(AppointmentStatus.CONFIRMED);
 
         Appointment updatedAppointment = appointmentRepository.save(appointment);
         return appointmentMapper.toAppointmentResponse(updatedAppointment);
@@ -88,6 +89,5 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment updatedAppointment = appointmentRepository.save(appointment);
         return appointmentMapper.toAppointmentResponse(updatedAppointment);
     }
-
 
 }

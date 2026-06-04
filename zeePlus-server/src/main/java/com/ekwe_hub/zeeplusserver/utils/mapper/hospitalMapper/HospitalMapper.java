@@ -18,7 +18,7 @@ public class HospitalMapper {
         hospital.setPhoneNumber(request.phoneNumber());
         hospital.setAddress(request.address());
         hospital.setLicenseNumber(request.licenseNumber());
-        hospital.setStatus(HospitalStatus.PENDING);
+        hospital.setHospitalStatus(HospitalStatus.PENDING);
         hospital.setUserRole(UserRole.HOSPITAL_ADMIN);
         return hospital;
     }
@@ -31,7 +31,6 @@ public class HospitalMapper {
                 hospital.getPhoneNumber(),
                 hospital.getAddress(),
                 hospital.getLicenseNumber(),
-                hospital.getStatus().name()
-            );
+                hospital.getHospitalStatus().name());
     }
 }

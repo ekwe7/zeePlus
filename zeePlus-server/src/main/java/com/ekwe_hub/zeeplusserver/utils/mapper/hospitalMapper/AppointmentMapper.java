@@ -12,10 +12,11 @@ import java.util.UUID;
 @Component
 public class AppointmentMapper {
     public Appointment toEntity(CreateAppointmentRequest createAppointmentRequest, Hospital hospital) {
-        if(hospital == null || createAppointmentRequest == null){
+        if (hospital == null || createAppointmentRequest == null) {
             return null;
         }
-        // Generate a clean, human-readable secure verification token (e.g., ZEE-A1B2C3D4)
+        // Generate a clean, human-readable secure verification token (e.g.,
+        // ZEE-A1B2C3D4)
         String cleanVerificationCode = "ZEE-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
 
         return Appointment.builder()
@@ -27,12 +28,13 @@ public class AppointmentMapper {
                 .build();
 
     }
-    public AppointmentResponse toAppointmentResponse(Appointment appointment) {
-        if(appointment == null){
 
+    public AppointmentResponse toAppointmentResponse(Appointment appointment) {
+        if (appointment == null) {
+            throw new IllegalArgumentException("Appointment cannot be null");
         }
 
-        //Check if a doctor has actually been allocated to this slot yet
+        // Check if a doctor has actually been allocated to this slot yet
         String doctorId = appointment.getDoctor() != null ? appointment.getDoctor().getId().toString() : null;
         String doctorName = appointment.getDoctor() != null ? appointment.getDoctor().getUsername() : null;
 
@@ -44,7 +46,6 @@ public class AppointmentMapper {
                 appointment.getAppointmentStatus(),
                 appointment.getHospital().getId(),
                 doctorId,
-                doctorName
-        );
+                doctorName);
     }
 }
