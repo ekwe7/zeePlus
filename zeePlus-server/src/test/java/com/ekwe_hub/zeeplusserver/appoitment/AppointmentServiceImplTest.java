@@ -1,6 +1,7 @@
 package com.ekwe_hub.zeeplusserver.appoitment;
 
 import com.ekwe_hub.zeeplusserver.dto.request.CreateAppointmentRequest;
+import com.ekwe_hub.zeeplusserver.dto.request.UpdateAppointmentStatusRequest;
 import com.ekwe_hub.zeeplusserver.dto.response.AppointmentResponse;
 import com.ekwe_hub.zeeplusserver.enums.AppointmentStatus;
 import com.ekwe_hub.zeeplusserver.exception.ResourceNotFoundException;
@@ -203,4 +204,46 @@ public class AppointmentServiceImplTest {
                 assertEquals(AppointmentStatus.CONFIRMED, response.appointmentStatus());
                 verify(appointmentRepository, times(1)).save(any(Appointment.class));
         }
+
+        @Test
+        void test_that_should_manually_update_appointment_status() {
+            UpdateAppointmentStatusRequest updateRequest = new UpdateAppointmentStatusRequest(AppointmentStatus.CANCELLED);
+
+            when(appointmentRepository.findById("AP-204")).thenReturn(Optional.of(mockAppointment));
+            when(appointmentRepository.save(any(Appointment.class))).thenReturn(mockAppointment);
+
+            AppointmentResponse mockedResponse = new AppointmentResponse(
+                    "AP-204", "Dotun Adedotun", "Severe chest pain and shortness of breath",
+                    "VNUM-028", AppointmentStatus.CANCELLED, "HS-001A", null, null);
+            when(appointmentMapper.toAppointmentResponse(any(Appointment.class))).thenReturn(mockedResponse);
+
+            AppointmentResponse response = appointmentService.updateAppointmentStatus("AP-204", updateRequest);
+
+            assertNotNull(response);
+            assertEquals(AppointmentStatus.CANCELLED, response.appointmentStatus());
+            verify(appointmentRepository, times(1)).save(any(Appointment.class));
+        }
+
+        @Test
+        void test_should_successfully_assign_available_doctor_to_appointment() {
+            when(appointmentRepository.findById("AP-204")).thenReturn(Optional.of(mockAppointment));
+            when(doctorRepository.findById("Doc-001")).thenReturn(Optional.of(mockDoctor));
+            when(appointmentRepository.save(any(Appointment.class))).thenReturn(mockAppointment);
+
+            AppointmentResponse mockedResponse = new AppointmentResponse(
+                    "AP-204", "Dotun Adedotun", "Severe chest pain and shortness of breath",
+                    "VNUM-028", AppointmentStatus.CONFIRMED, "HS-001A", "Doc-001", "Dr Uche");
+            when(appointmentMapper.toAppointmentResponse(any(Appointment.class))).thenReturn(mockedResponse);
+
+            AppointmentResponse response = appointmentService.assignDoctorToAppointment("AP-204", "Doc-001");
+
+            assertNotNull(response);
+            assertEquals("Doc-001", response.doctorId());
+            assertEquals("Dr Uche", response.doctorName());
+            assertEquals(AppointmentStatus.CONFIRMED, response.appointmentStatus());
+            verify(appointmentRepository, times(1)).save(any(Appointment.class));
+        }
+
+
+
 }

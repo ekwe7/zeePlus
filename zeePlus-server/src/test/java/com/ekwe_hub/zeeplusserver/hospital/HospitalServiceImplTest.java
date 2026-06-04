@@ -1,7 +1,9 @@
 package com.ekwe_hub.zeeplusserver.hospital;
 
 import com.ekwe_hub.zeeplusserver.dto.request.CreateHospitalRequest;
+import com.ekwe_hub.zeeplusserver.dto.request.UpdateAppointmentStatusRequest;
 import com.ekwe_hub.zeeplusserver.dto.response.HospitalResponse;
+import com.ekwe_hub.zeeplusserver.enums.AppointmentStatus;
 import com.ekwe_hub.zeeplusserver.enums.HospitalStatus;
 import com.ekwe_hub.zeeplusserver.utils.mapper.hospitalMapper.HospitalMapper;
 import com.ekwe_hub.zeeplusserver.model.Hospital;
@@ -184,5 +186,6 @@ public class HospitalServiceImplTest {
 
 
     }
+
 
 }
