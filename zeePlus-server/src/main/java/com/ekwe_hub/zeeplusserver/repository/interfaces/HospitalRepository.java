@@ -9,9 +9,11 @@ public interface HospitalRepository {
     Hospital save(Hospital hospital);
 
     Optional<Hospital> findById(String id);
+
     Optional<Hospital> findByLicenseNumber(String licenseNumber);
 
     Optional<Hospital> findByEmail(String email);
+
     List<Hospital> findAll();
 
     Hospital update(Hospital hospital);
