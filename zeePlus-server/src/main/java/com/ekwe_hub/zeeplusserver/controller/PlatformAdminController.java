@@ -2,6 +2,7 @@ package com.ekwe_hub.zeeplusserver.controller;
 
 import com.ekwe_hub.zeeplusserver.dto.request.CreatePlatformAdminRequest;
 import com.ekwe_hub.zeeplusserver.dto.response.PlatformAdminResponse;
+import com.ekwe_hub.zeeplusserver.enums.UserRole;
 import com.ekwe_hub.zeeplusserver.service.interfaces.PlatformAdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -36,7 +37,7 @@ public class PlatformAdminController {
     }
 
     @GetMapping("/role/{role}")
-    public ResponseEntity<List<PlatformAdminResponse>> getAdminsByRole(@RequestParam String role) {
+    public ResponseEntity<List<PlatformAdminResponse>> getAdminsByRole(@PathVariable UserRole role) {
         List<PlatformAdminResponse> responses = platformAdminService.getAdminsByRole(role);
         return ResponseEntity.ok(responses);
     }
