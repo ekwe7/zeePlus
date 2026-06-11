@@ -43,10 +43,10 @@ public class PlatformAdminController {
     }
 
     @PatchMapping("/{id}/status")
-    public ResponseEntity<PlatformAdminResponse> updateAdminStatus(@PathVariable String id, @RequestParam boolean isActive) {
+    public ResponseEntity<PlatformAdminResponse> updateAdminStatus(@PathVariable String id,
+            @RequestParam boolean isActive) {
         PlatformAdminResponse response = platformAdminService.updateAdminStatus(id, isActive);
         return ResponseEntity.ok(response);
     }
-
 
 }
