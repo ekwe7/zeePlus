@@ -3,6 +3,7 @@ package com.ekwe_hub.zeeplusserver.model;
 import com.ekwe_hub.zeeplusserver.enums.AppointmentStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Table(name = "appointments")
@@ -10,8 +11,8 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Appointment extends BaseEntity{
+@SuperBuilder
+public class Appointment extends BaseEntity {
     private String patientName;
 
     @Column(columnDefinition = "TEXT")
