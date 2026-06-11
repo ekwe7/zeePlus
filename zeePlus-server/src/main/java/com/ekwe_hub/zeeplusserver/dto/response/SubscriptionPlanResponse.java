@@ -1,5 +1,6 @@
 package com.ekwe_hub.zeeplusserver.dto.response;
 
+import com.ekwe_hub.zeeplusserver.enums.HospitalAccessLevel;
 import com.ekwe_hub.zeeplusserver.enums.SubscriptionTier;
 
 import java.math.BigDecimal;
@@ -10,5 +11,8 @@ public record SubscriptionPlanResponse(
         SubscriptionTier tier,
         BigDecimal price,
         BigDecimal coverageLimit,
+        BigDecimal medicationCoverageLimit,
+        HospitalAccessLevel hospitalAccessLevel,
+        boolean allowSpecialistAccess,
         boolean isActive
 ) {}

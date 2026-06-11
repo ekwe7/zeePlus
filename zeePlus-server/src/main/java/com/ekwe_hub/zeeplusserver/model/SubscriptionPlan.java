@@ -1,5 +1,6 @@
 package com.ekwe_hub.zeeplusserver.model;
 
+import com.ekwe_hub.zeeplusserver.enums.HospitalAccessLevel;
 import com.ekwe_hub.zeeplusserver.enums.SubscriptionTier;
 import jakarta.persistence.*;
 import lombok.*;
@@ -15,6 +16,10 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @SuperBuilder
 public class SubscriptionPlan extends BaseEntity{
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
     @Column(name = "plan_name", nullable = false)
     private String planName;
@@ -32,4 +37,14 @@ public class SubscriptionPlan extends BaseEntity{
     @Column(name = "is_active", nullable = false)
     @Builder.Default
     private boolean isActive = true;
+
+    @Column(name = "medication_coverage_limit", nullable = false)
+    private BigDecimal medicationCoverageLimit;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "hospital_access_level", nullable = false)
+    private HospitalAccessLevel hospitalAccessLevel;
+
+    @Column(name = "allow_specialist_access", nullable = false)
+    private boolean allowSpecialistAccess;
 }
