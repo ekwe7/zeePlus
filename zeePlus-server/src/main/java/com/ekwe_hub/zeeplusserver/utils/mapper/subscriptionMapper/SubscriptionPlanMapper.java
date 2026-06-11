@@ -16,6 +16,9 @@ public class SubscriptionPlanMapper {
                 .tier(request.tier())
                 .price(request.price())
                 .coverageLimit(request.coverageLimit())
+                .medicationCoverageLimit(request.medicationCoverageLimit())
+                .hospitalAccessLevel(request.hospitalAccessLevel())
+                .allowSpecialistAccess(request.allowSpecialistAccess())
                 .isActive(true)
                 .build();
     }
@@ -30,6 +33,9 @@ public class SubscriptionPlanMapper {
                 subscriptionPlan.getTier(),
                 subscriptionPlan.getPrice(),
                 subscriptionPlan.getCoverageLimit(),
+                subscriptionPlan.getMedicationCoverageLimit(),
+                subscriptionPlan.getHospitalAccessLevel(),
+                subscriptionPlan.isAllowSpecialistAccess(),
                 subscriptionPlan.isActive());
 
     }

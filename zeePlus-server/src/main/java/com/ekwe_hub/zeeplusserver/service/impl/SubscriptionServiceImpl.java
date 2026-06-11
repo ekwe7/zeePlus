@@ -49,6 +49,13 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                     "Plan pricing and annual medical coverage thresholds must be positive values.");
         }
 
+        if (request.price().compareTo(BigDecimal.ZERO) < 0 ||
+        request.coverageLimit().compareTo(BigDecimal.ZERO) <= 0 ||
+        request.medicationCoverageLimit().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException(
+                    "Plan pricing and annual medical coverage thresholds must be positive values.");
+        }
+
         SubscriptionPlan planEntity = subscriptionPlanMapper.toEntity(request);
         SubscriptionPlan savedPlan = subscriptionPlanRepository.save(planEntity);
 

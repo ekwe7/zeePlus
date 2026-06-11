@@ -4,6 +4,7 @@ import com.ekwe_hub.zeeplusserver.dto.request.CreateSubscriptionPlanRequest;
 import com.ekwe_hub.zeeplusserver.dto.request.SubscribePatientRequest;
 import com.ekwe_hub.zeeplusserver.dto.response.PatientSubscriptionResponse;
 import com.ekwe_hub.zeeplusserver.dto.response.SubscriptionPlanResponse;
+import com.ekwe_hub.zeeplusserver.enums.HospitalAccessLevel;
 import com.ekwe_hub.zeeplusserver.enums.SubscriptionStatus;
 import com.ekwe_hub.zeeplusserver.enums.SubscriptionTier;
 import com.ekwe_hub.zeeplusserver.exception.ResourceNotFoundException;
@@ -66,7 +67,7 @@ public class SubscriptionServiceImplTest {
 
         mockSubscriptionPlan = SubscriptionPlan.builder()
                 .planName("ZeeCare Premium Gold")
-                .tier(SubscriptionTier.STANDARD)
+                .tier(SubscriptionTier.PREMIUM)
                 .price(new BigDecimal("250000.00"))
                 .coverageLimit(new BigDecimal("2000000"))
                 .isActive(true)
@@ -102,21 +103,17 @@ public class SubscriptionServiceImplTest {
      @Test
          void createPlan_ShouldSuccessfullySavePlan_WhenNameIsUnique() {
          CreateSubscriptionPlanRequest request = new CreateSubscriptionPlanRequest(
-         "ZeeCare Premium Gold", SubscriptionTier.PREMIUM, new
-         BigDecimal("150000.00"),
-         new BigDecimal("2000000.00"));
-
-         SubscriptionPlan savedPlan = SubscriptionPlan.builder()
-         .planName("ZeeCare Premium Gold")
-         .tier(SubscriptionTier.PREMIUM)
-         .price(new BigDecimal("150000.00"))
-         .coverageLimit(new BigDecimal("2000000.00"))
-         .isActive(true)
-         .build();
-         savedPlan.setId("ZEE-031-PLAN");
+         "ZeeCare Premium Gold",
+                 SubscriptionTier.PREMIUM,
+                 new BigDecimal("150000.00"),
+                 new BigDecimal("2000000.00"),
+                new BigDecimal("300000.00"),
+                 HospitalAccessLevel.PRE_APPROVED_PRIVATE,
+                 true
+     );
 
          when(subscriptionPlanRepository.findByPlanNameIgnoreCase("ZeeCare Premium Gold")).thenReturn(Optional.empty());
-         when(subscriptionPlanRepository.save(any(SubscriptionPlan.class))).thenReturn(savedPlan);
+         when(subscriptionPlanRepository.save(any(SubscriptionPlan.class))).thenReturn(mockSubscriptionPlan);
 
          SubscriptionPlanResponse response =
          subscriptionService.createSubscriptionPlan(request);
@@ -128,6 +125,7 @@ public class SubscriptionServiceImplTest {
 
     @Test
     void test_that_patient_can_succefully_subscribe_to_a_plan() {
+
         when(patientRepository.findById(patientId)).thenReturn(Optional.of(mockPatient));
         when(subscriptionPlanRepository.findById(planId)).thenReturn(Optional.of(mockSubscriptionPlan));
         when(patientSubscriptionRepository.findActiveSubscription(patientId)).thenReturn(Optional.empty());
@@ -195,6 +193,7 @@ public class SubscriptionServiceImplTest {
         assertTrue(exception.getMessage().contains("Patient currently has an active 'ZeeCare Gold' subscription"));
 
     }
+
 
 
 }
