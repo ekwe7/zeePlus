@@ -1,0 +1,80 @@
+name: Zee Plus CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  master:
+    name: master
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set Up Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 25
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Run Tests
+        run: ./gradlew clean test
+
+  test:
+    name: Test on ${{ matrix.os }} / Java ${{ matrix.java }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        java: [21, 25]
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set Up Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+
+      - name: Make gradlew executable (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: chmod +x gradlew
+
+      - name: Run Tests (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: ./gradlew clean test
+
+      - name: Run Tests (Windows)
+        if: runner.os == 'Windows'
+        run: gradlew.bat clean test
+
+  build:
+    name: Build Jar (Ubuntu only)
+    runs-on: ubuntu-latest
+    needs: master
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set Up Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 25
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Build Project
+        run: ./gradlew clean build
