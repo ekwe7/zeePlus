@@ -33,8 +33,17 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        java: [21, 25]
+        include:
+          - os: ubuntu-latest
+            java: 21
+          - os: ubuntu-latest
+            java: 25
+          - os: windows-latest
+            java: 21
+          - os: macos-latest
+            java: 21
+          - os: macos-latest
+            java: 25
 
     steps:
       - name: Checkout Code
