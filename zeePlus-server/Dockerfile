@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN chmod +x gradlew && ./gradlew clean build -x test
+RUN chmod +x zeePlus-server/gradlew && cd zeePlus-server && ./gradlew clean build -x test
 
 FROM eclipse-temurin:21-jre-jammy
 
