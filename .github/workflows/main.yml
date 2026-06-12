@@ -39,7 +39,7 @@ jobs:
           - os: ubuntu-latest
             java: 25
           - os: windows-latest
-            java: 26
+            java: 21
           - os: macos-latest
             java: 21
           - os: macos-latest
