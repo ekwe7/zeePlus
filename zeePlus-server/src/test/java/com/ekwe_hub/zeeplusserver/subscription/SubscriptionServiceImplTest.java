@@ -100,28 +100,26 @@ public class SubscriptionServiceImplTest {
         mockSavedSubscription.setId("SUB-UUID-001");
     }
 
-     @Test
-         void createPlan_ShouldSuccessfullySavePlan_WhenNameIsUnique() {
-         CreateSubscriptionPlanRequest request = new CreateSubscriptionPlanRequest(
-         "ZeeCare Premium Gold",
-                 SubscriptionTier.PREMIUM,
-                 new BigDecimal("150000.00"),
-                 new BigDecimal("2000000.00"),
+    @Test
+    void createPlan_ShouldSuccessfullySavePlan_WhenNameIsUnique() {
+        CreateSubscriptionPlanRequest request = new CreateSubscriptionPlanRequest(
+                "ZeeCare Premium Gold",
+                SubscriptionTier.PREMIUM,
+                new BigDecimal("150000.00"),
+                new BigDecimal("2000000.00"),
                 new BigDecimal("300000.00"),
-                 HospitalAccessLevel.PRE_APPROVED_PRIVATE,
-                 true
-     );
+                HospitalAccessLevel.PRE_APPROVED_PRIVATE,
+                true);
 
-         when(subscriptionPlanRepository.findByPlanNameIgnoreCase("ZeeCare Premium Gold")).thenReturn(Optional.empty());
-         when(subscriptionPlanRepository.save(any(SubscriptionPlan.class))).thenReturn(mockSubscriptionPlan);
+        when(subscriptionPlanRepository.findByPlanNameIgnoreCase("ZeeCare Premium Gold")).thenReturn(Optional.empty());
+        when(subscriptionPlanRepository.save(any(SubscriptionPlan.class))).thenReturn(mockSubscriptionPlan);
 
-         SubscriptionPlanResponse response =
-         subscriptionService.createSubscriptionPlan(request);
+        SubscriptionPlanResponse response = subscriptionService.createSubscriptionPlan(request);
 
-         assertNotNull(response);
-         assertEquals("ZeeCare Premium Gold", response.planName());
-         assertEquals(SubscriptionTier.PREMIUM, response.tier());
-     }
+        assertNotNull(response);
+        assertEquals("ZeeCare Premium Gold", response.planName());
+        assertEquals(SubscriptionTier.PREMIUM, response.tier());
+    }
 
     @Test
     void test_that_patient_can_succefully_subscribe_to_a_plan() {
@@ -151,20 +149,22 @@ public class SubscriptionServiceImplTest {
 
         when(patientRepository.existsById(patientId)).thenReturn(true);
 
-        // The database returns empty because the JPQL condition (endDate > CURRENT_TIMESTAMP) fails
+        // The database returns empty because the JPQL condition (endDate >
+        // CURRENT_TIMESTAMP) fails
         when(patientSubscriptionRepository.findActiveSubscription(patientId)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
-                subscriptionService.getActivePatientSubscription(patientId)
-        );
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
+                () -> subscriptionService.getActivePatientSubscription(patientId));
 
-        // Assert that the domain error messaging match your service layer specifications
-        assertEquals("No active subscription plan contract found for this patient ID. Access Denied.", exception.getMessage());
+        // Assert that the domain error messaging match your service layer
+        // specifications
+        assertEquals("No active subscription plan contract found for this patient ID. Access Denied.",
+                exception.getMessage());
 
     }
 
     @Test
-    void test_that_purchasing_new_plan_while_having_active_subscription_throws_exception() {
+    void purchaseSubscription_ShouldThrowException_WhenPatientAlreadyHasActiveSubscription() {
 
         String patientId = "PAT-111";
         String planId = "PLAN-999";
@@ -184,16 +184,14 @@ public class SubscriptionServiceImplTest {
 
         when(patientRepository.findById(patientId)).thenReturn(Optional.of(mockPatient));
         when(subscriptionPlanRepository.findById(planId)).thenReturn(Optional.of(mockPlan));
-        when(patientSubscriptionRepository.findActiveSubscription(patientId)).thenReturn(Optional.of(runningSubscription));
+        when(patientSubscriptionRepository.findActiveSubscription(patientId))
+                .thenReturn(Optional.of(runningSubscription));
 
-        IllegalStateException exception = assertThrows(IllegalStateException.class, () ->
-                subscriptionService.purchaseSubscription(request)
-        );
+        IllegalStateException exception = assertThrows(IllegalStateException.class,
+                () -> subscriptionService.purchaseSubscription(request));
 
         assertTrue(exception.getMessage().contains("Patient currently has an active 'ZeeCare Gold' subscription"));
 
     }
-
-
 
 }
