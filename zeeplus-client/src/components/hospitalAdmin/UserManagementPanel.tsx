@@ -34,12 +34,19 @@ const PLAN_BADGE_VARIANT: Record<EligibilityPlan, "default" | "secondary" | "des
   EXPIRED: "destructive",
 };
 
+const STATUS_BADGE_VARIANT: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
+  PENDING: "secondary",
+  ACTIVE: "default",
+  SUSPENDED: "destructive",
+};
+
 export function UserManagementPanel() {
   const { email: adminEmail } = useAuthStore();
-  const { createUser, users, updateEligibilityPlan } = useUserAccountsStore();
+  const { createUser, users, updateEligibilityPlan, updateUserStatus } = useUserAccountsStore();
   const [serverError, setServerError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [planFeedback, setPlanFeedback] = useState<Record<string, string>>({});
+  const [statusFeedback, setStatusFeedback] = useState<Record<string, string>>({});
 
   const {
     register,
@@ -71,6 +78,7 @@ export function UserManagementPanel() {
 
   const staffUsers = users.filter((u) => u.role === "doctor" || u.role === "pharmacist");
   const patientUsers = users.filter((u) => u.role === "patient");
+  const hospitalUsers = users.filter((u) => u.role === "admin");
 
   const handlePlanChange = (patientId: string, newPlan: string) => {
     const result = updateEligibilityPlan(patientId, newPlan);
@@ -87,6 +95,22 @@ export function UserManagementPanel() {
       );
     } else {
       setPlanFeedback((prev) => ({ ...prev, [patientId]: result.error ?? "Update failed" }));
+    }
+  };
+
+  const handleStatusChange = (userId: string, newStatus: string) => {
+    const result = updateUserStatus(userId, newStatus as any);
+    if (result.success) {
+      setStatusFeedback((prev) => ({ ...prev, [userId]: `Status updated to ${newStatus}` }));
+      setTimeout(
+        () =>
+          setStatusFeedback((prev) => {
+            const next = { ...prev };
+            delete next[userId];
+            return next;
+          }),
+        3000,
+      );
     }
   };
 
@@ -180,9 +204,17 @@ export function UserManagementPanel() {
                       <div className="font-medium">{u.name}</div>
                       <div className="text-xs text-muted-foreground">{u.email}</div>
                     </div>
-                    <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary capitalize">
-                      {u.role}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline" className="capitalize">
+                        {u.role}
+                      </Badge>
+                      <Badge
+                        variant={u.status === "ACTIVE" ? "default" : "destructive"}
+                        className="text-[10px] h-4"
+                      >
+                        {u.status}
+                      </Badge>
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -190,6 +222,58 @@ export function UserManagementPanel() {
           </CardContent>
         </Card>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Hospital Accounts (Platform Admin Only)</CardTitle>
+          <CardDescription>Verify and activate hospital accounts</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {hospitalUsers.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No hospital accounts found.</p>
+          ) : (
+            <ul className="space-y-3">
+              {hospitalUsers.map((h) => (
+                <li
+                  key={h.id}
+                  className="flex flex-col gap-2 rounded-md border border-border px-3 py-3 sm:flex-row sm:items-center sm:justify-between"
+                >
+                  <div className="min-w-0 flex-1">
+                    <div className="font-medium flex items-center gap-2">
+                      {h.name}
+                      {h.id === "admin-seed" && <Badge variant="outline">System Admin</Badge>}
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      {h.email} · {h.licenseNumber ?? "No license"}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Badge variant={STATUS_BADGE_VARIANT[h.status] ?? "outline"}>{h.status}</Badge>
+                    <Select
+                      defaultValue={h.status}
+                      onValueChange={(v) => handleStatusChange(h.id, v)}
+                    >
+                      <SelectTrigger className="w-32">
+                        <SelectValue placeholder="Status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="PENDING">PENDING</SelectItem>
+                        <SelectItem value="ACTIVE">ACTIVE</SelectItem>
+                        <SelectItem value="SUSPENDED">SUSPENDED</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  {statusFeedback[h.id] && (
+                    <p className="text-xs text-green-700 dark:text-green-300 sm:col-span-full">
+                      {statusFeedback[h.id]}
+                    </p>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>

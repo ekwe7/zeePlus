@@ -17,6 +17,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import { toast } from "sonner";
+
 const loginSchema = z.object({
   email: z.string().email("Enter a valid email address"),
   password: z.string().min(8, "Password must be at least 8 characters"),
@@ -53,6 +55,16 @@ function LoginForm() {
       setServerError(result.error ?? "Sign in failed.");
       return;
     }
+
+    // Check hospital status after login (simulating backend check)
+    const { users } = useUserAccountsStore.getState();
+    const user = users.find((u) => u.email.toLowerCase() === data.email.toLowerCase());
+    if (user?.role === "admin" && user.status !== "ACTIVE") {
+      setServerError(`Access denied. Your hospital account is ${user.status.toLowerCase()}.`);
+      useAuthStore.getState().logout();
+      return;
+    }
+
     navigate({ to: "/admin/dashboard" });
   };
 
@@ -126,6 +138,7 @@ function RegisterForm() {
       setServerError(result.error ?? "Registration failed.");
       return;
     }
+    toast.success("Hospital registered successfully! Account is pending verification.");
     navigate({ to: "/admin/dashboard" });
   };
 

@@ -19,7 +19,7 @@ export function BookAppointment() {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    const code = "APT-" + Math.floor(1000 + Math.random() * 9000);
+    const code = "HMO-APT-" + Math.floor(10000 + Math.random() * 90000);
     add({
       id: crypto.randomUUID(),
       code,

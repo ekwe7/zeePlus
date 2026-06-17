@@ -3,6 +3,8 @@ import { persist } from "zustand/middleware";
 import type { Role } from "@/constants/roles";
 
 export type EligibilityPlan = "BASIC" | "PREMIUM" | "EXPIRED";
+export type HospitalStatus = "PENDING" | "ACTIVE" | "SUSPENDED";
+export type RecordStatus = "ACTIVE" | "INACTIVE" | "DELETED";
 
 export interface UserAccount {
   id: string;
@@ -16,6 +18,7 @@ export interface UserAccount {
   address?: string;
   licenseNumber?: string;
   hospitalType?: string;
+  status: HospitalStatus | RecordStatus;
   createdAt: string;
   createdBy: string;
 }
@@ -41,6 +44,10 @@ interface UserAccountsState {
   users: UserAccount[];
   createUser: (payload: CreateUserPayload) => CreateUserResult;
   updateEligibilityPlan: (userId: string, plan: string) => { success: boolean; error?: string };
+  updateUserStatus: (
+    userId: string,
+    status: HospitalStatus | RecordStatus,
+  ) => { success: boolean; error?: string };
 }
 
 const DEFAULT_ADMIN: UserAccount = {
@@ -49,6 +56,7 @@ const DEFAULT_ADMIN: UserAccount = {
   email: "admin@mediflow.com",
   password: "admin1234",
   role: "admin",
+  status: "ACTIVE",
   createdAt: new Date().toISOString(),
   createdBy: "system",
 };
@@ -65,6 +73,17 @@ export const useUserAccountsStore = create<UserAccountsState>()(
         if (emailExists) {
           return { success: false, error: "Email already in use" };
         }
+
+        // License number must be unique for hospitals
+        if (payload.role === "admin" && payload.licenseNumber) {
+          const licenseExists = users.some(
+            (u) => u.licenseNumber === payload.licenseNumber,
+          );
+          if (licenseExists) {
+            return { success: false, error: "License number already registered" };
+          }
+        }
+
         const newUser: UserAccount = {
           id: crypto.randomUUID(),
           name: payload.name,
@@ -77,6 +96,8 @@ export const useUserAccountsStore = create<UserAccountsState>()(
           address: payload.address,
           licenseNumber: payload.licenseNumber,
           hospitalType: payload.hospitalType,
+          // Hospitals start as PENDING, others as ACTIVE
+          status: payload.role === "admin" ? "PENDING" : "ACTIVE",
           createdAt: new Date().toISOString(),
           createdBy: payload.createdBy,
         };
@@ -97,6 +118,17 @@ export const useUserAccountsStore = create<UserAccountsState>()(
           users: state.users.map((u) =>
             u.id === userId ? { ...u, eligibilityPlan: plan as EligibilityPlan } : u,
           ),
+        }));
+        return { success: true };
+      },
+      updateUserStatus: (userId, status) => {
+        const { users } = get();
+        const userIndex = users.findIndex((u) => u.id === userId);
+        if (userIndex === -1) {
+          return { success: false, error: "User not found" };
+        }
+        set((state) => ({
+          users: state.users.map((u) => (u.id === userId ? { ...u, status } : u)),
         }));
         return { success: true };
       },
