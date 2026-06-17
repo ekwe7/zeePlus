@@ -1,0 +1,16 @@
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
+import tsconfigPaths from "vite-tsconfig-paths";
+
+// TanStack Start apps require their Vite plugin integration to generate the client entry/hydration.
+// The previous “minimal” config removed the TanStack/Vite integration and can lead to blank pages.
+import { tanstackStartVite } from "@lovable.dev/vite-tanstack-config";
+
+export default defineConfig({
+  plugins: [react(), tsconfigPaths(), tanstackStartVite()],
+  server: {
+    strictPort: true,
+  },
+});
+
+
