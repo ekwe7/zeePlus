@@ -11,7 +11,10 @@ export function UploadPrescription() {
   const [form, setForm] = useState({ patient: "", disease: "", meds: "" });
   return (
     <div>
-      <PageHeader title="Upload Prescription" subtitle="Issue a new prescription to a patient." />
+      <PageHeader
+        title="Upload Prescription"
+        subtitle="Issue a new prescription to a patient."
+      />
       <Card className="max-w-2xl">
         <CardContent className="grid gap-3 p-6">
           <div className="grid gap-1.5">

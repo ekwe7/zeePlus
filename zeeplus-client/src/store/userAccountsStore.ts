@@ -43,7 +43,10 @@ interface CreateUserResult {
 interface UserAccountsState {
   users: UserAccount[];
   createUser: (payload: CreateUserPayload) => CreateUserResult;
-  updateEligibilityPlan: (userId: string, plan: string) => { success: boolean; error?: string };
+  updateEligibilityPlan: (
+    userId: string,
+    plan: string,
+  ) => { success: boolean; error?: string };
   updateUserStatus: (
     userId: string,
     status: HospitalStatus | RecordStatus,
@@ -80,7 +83,10 @@ export const useUserAccountsStore = create<UserAccountsState>()(
             (u) => u.licenseNumber === payload.licenseNumber,
           );
           if (licenseExists) {
-            return { success: false, error: "License number already registered" };
+            return {
+              success: false,
+              error: "License number already registered",
+            };
           }
         }
 
@@ -116,7 +122,9 @@ export const useUserAccountsStore = create<UserAccountsState>()(
         }
         set((state) => ({
           users: state.users.map((u) =>
-            u.id === userId ? { ...u, eligibilityPlan: plan as EligibilityPlan } : u,
+            u.id === userId
+              ? { ...u, eligibilityPlan: plan as EligibilityPlan }
+              : u,
           ),
         }));
         return { success: true };
@@ -128,7 +136,9 @@ export const useUserAccountsStore = create<UserAccountsState>()(
           return { success: false, error: "User not found" };
         }
         set((state) => ({
-          users: state.users.map((u) => (u.id === userId ? { ...u, status } : u)),
+          users: state.users.map((u) =>
+            u.id === userId ? { ...u, status } : u,
+          ),
         }));
         return { success: true };
       },

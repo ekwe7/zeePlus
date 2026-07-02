@@ -9,7 +9,9 @@ export function ViewAssignedPatients() {
     <div>
       <PageHeader title="Assigned Patients" />
       <div className="grid gap-3">
-        {list.length === 0 && <p className="text-muted-foreground">No patients assigned.</p>}
+        {list.length === 0 && (
+          <p className="text-muted-foreground">No patients assigned.</p>
+        )}
         {list.map((a) => (
           <Card key={a.id}>
             <CardContent className="p-5">

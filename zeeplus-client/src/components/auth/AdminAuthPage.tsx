@@ -4,10 +4,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useNavigate } from "@tanstack/react-router";
 import { useAuthStore } from "@/store/authStore";
+import { useUserAccountsStore } from "@/store/userAccountsStore";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
@@ -50,18 +57,13 @@ function LoginForm() {
 
   const onSubmit = (data: LoginValues) => {
     setServerError(null);
-    const result = login({ email: data.email, password: data.password, allowAdmin: true });
+    const result = login({
+      email: data.email,
+      password: data.password,
+      allowAdmin: true,
+    });
     if (!result.success) {
       setServerError(result.error ?? "Sign in failed.");
-      return;
-    }
-
-    // Check hospital status after login (simulating backend check)
-    const { users } = useUserAccountsStore.getState();
-    const user = users.find((u) => u.email.toLowerCase() === data.email.toLowerCase());
-    if (user?.role === "admin" && user.status !== "ACTIVE") {
-      setServerError(`Access denied. Your hospital account is ${user.status.toLowerCase()}.`);
-      useAuthStore.getState().logout();
       return;
     }
 
@@ -78,7 +80,9 @@ function LoginForm() {
           placeholder="admin@mediflow.com"
           {...register("email")}
         />
-        {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
+        {errors.email && (
+          <p className="text-xs text-destructive">{errors.email.message}</p>
+        )}
       </div>
       <div className="space-y-1">
         <Label htmlFor="login-password">Password</Label>
@@ -88,7 +92,9 @@ function LoginForm() {
           placeholder="••••••••"
           {...register("password")}
         />
-        {errors.password && <p className="text-xs text-destructive">{errors.password.message}</p>}
+        {errors.password && (
+          <p className="text-xs text-destructive">{errors.password.message}</p>
+        )}
       </div>
       {serverError && (
         <div className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
@@ -114,6 +120,7 @@ function RegisterForm() {
     register,
     handleSubmit,
     control,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<RegisterValues>({
     resolver: zodResolver(registerSchema),
@@ -138,8 +145,10 @@ function RegisterForm() {
       setServerError(result.error ?? "Registration failed.");
       return;
     }
-    toast.success("Hospital registered successfully! Account is pending verification.");
-    navigate({ to: "/admin/dashboard" });
+    toast.success(
+      "Hospital registered successfully! Please sign in once verified.",
+    );
+    reset();
   };
 
   return (
@@ -147,8 +156,15 @@ function RegisterForm() {
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1">
           <Label htmlFor="reg-name">Hospital Name</Label>
-          <Input id="reg-name" type="text" placeholder="St. Mary's Hospital" {...register("name")} />
-          {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
+          <Input
+            id="reg-name"
+            type="text"
+            placeholder="St. Mary's Hospital"
+            {...register("name")}
+          />
+          {errors.name && (
+            <p className="text-xs text-destructive">{errors.name.message}</p>
+          )}
         </div>
         <div className="space-y-1">
           <Label htmlFor="reg-email">Email</Label>
@@ -158,31 +174,54 @@ function RegisterForm() {
             placeholder="admin@hospital.com"
             {...register("email")}
           />
-          {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
+          {errors.email && (
+            <p className="text-xs text-destructive">{errors.email.message}</p>
+          )}
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1">
           <Label htmlFor="reg-phone">Phone Number</Label>
-          <Input id="reg-phone" type="tel" placeholder="+234..." {...register("phoneNumber")} />
+          <Input
+            id="reg-phone"
+            type="tel"
+            placeholder="+234..."
+            {...register("phoneNumber")}
+          />
           {errors.phoneNumber && (
-            <p className="text-xs text-destructive">{errors.phoneNumber.message}</p>
+            <p className="text-xs text-destructive">
+              {errors.phoneNumber.message}
+            </p>
           )}
         </div>
         <div className="space-y-1">
           <Label htmlFor="reg-license">License Number</Label>
-          <Input id="reg-license" type="text" placeholder="HOS-12345" {...register("licenseNumber")} />
+          <Input
+            id="reg-license"
+            type="text"
+            placeholder="HOS-12345"
+            {...register("licenseNumber")}
+          />
           {errors.licenseNumber && (
-            <p className="text-xs text-destructive">{errors.licenseNumber.message}</p>
+            <p className="text-xs text-destructive">
+              {errors.licenseNumber.message}
+            </p>
           )}
         </div>
       </div>
 
       <div className="space-y-1">
         <Label htmlFor="reg-address">Address</Label>
-        <Input id="reg-address" type="text" placeholder="123 Health St, Lagos" {...register("address")} />
-        {errors.address && <p className="text-xs text-destructive">{errors.address.message}</p>}
+        <Input
+          id="reg-address"
+          type="text"
+          placeholder="123 Health St, Lagos"
+          {...register("address")}
+        />
+        {errors.address && (
+          <p className="text-xs text-destructive">{errors.address.message}</p>
+        )}
       </div>
 
       <div className="space-y-1">
@@ -205,14 +244,23 @@ function RegisterForm() {
           )}
         />
         {errors.hospitalType && (
-          <p className="text-xs text-destructive">{errors.hospitalType.message}</p>
+          <p className="text-xs text-destructive">
+            {errors.hospitalType.message}
+          </p>
         )}
       </div>
 
       <div className="space-y-1">
         <Label htmlFor="reg-password">Password</Label>
-        <Input id="reg-password" type="password" placeholder="••••••••" {...register("password")} />
-        {errors.password && <p className="text-xs text-destructive">{errors.password.message}</p>}
+        <Input
+          id="reg-password"
+          type="password"
+          placeholder="••••••••"
+          {...register("password")}
+        />
+        {errors.password && (
+          <p className="text-xs text-destructive">{errors.password.message}</p>
+        )}
       </div>
 
       {serverError && (
@@ -236,7 +284,9 @@ export function AdminAuthPage() {
             Z
           </div>
           <CardTitle className="text-2xl">Hospital Portal</CardTitle>
-          <CardDescription>Register or sign in to manage your hospital</CardDescription>
+          <CardDescription>
+            Register or sign in to manage your hospital
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="login">

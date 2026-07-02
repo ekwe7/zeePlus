@@ -10,11 +10,18 @@ export function DispenseMedication() {
   const [rx, setRx] = useState("");
   return (
     <div>
-      <PageHeader title="Dispense" subtitle="Hand off medication to the patient." />
+      <PageHeader
+        title="Dispense"
+        subtitle="Hand off medication to the patient."
+      />
       <Card className="max-w-xl">
         <CardContent className="grid gap-3 p-6">
           <Label>Prescription ID</Label>
-          <Input value={rx} onChange={(e) => setRx(e.target.value)} placeholder="RX-…" />
+          <Input
+            value={rx}
+            onChange={(e) => setRx(e.target.value)}
+            placeholder="RX-…"
+          />
           <Button
             className="w-fit"
             onClick={() => toast.success(`Dispensed ${rx || "prescription"}`)}

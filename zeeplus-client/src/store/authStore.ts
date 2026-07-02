@@ -73,6 +73,13 @@ export const useAuthStore = create<AuthState>()(
           };
         }
 
+        if (user.role === "admin" && user.status !== "ACTIVE") {
+          return {
+            success: false,
+            error: `Access denied. Your hospital account is ${user.status.toLowerCase()}.`,
+          };
+        }
+
         set({
           id: user.id,
           role: user.role,
@@ -103,7 +110,14 @@ export const useAuthStore = create<AuthState>()(
         // We need to find the created user to get their ID
         const createdUser = useUserAccountsStore
           .getState()
-          .users.find((u) => u.email.toLowerCase() === payload.email.toLowerCase());
+          .users.find(
+            (u) => u.email.toLowerCase() === payload.email.toLowerCase(),
+          );
+
+        // Do not auto-login if hospital admin (they start as PENDING)
+        if (payload.role === "admin") {
+          return { success: true };
+        }
 
         set({
           id: createdUser?.id || null,

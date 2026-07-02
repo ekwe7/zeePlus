@@ -7,7 +7,10 @@ export function PharmacistDashboard() {
   const low = items.filter((i) => i.stock < i.threshold).length;
   return (
     <div>
-      <PageHeader title="Pharmacy Console" subtitle="Stock and dispense overview." />
+      <PageHeader
+        title="Pharmacy Console"
+        subtitle="Stock and dispense overview."
+      />
       <div className="grid gap-4 sm:grid-cols-3">
         <StatCard label="SKUs in stock" value={items.length} />
         <StatCard label="Low stock" value={low} hint="Below threshold" />

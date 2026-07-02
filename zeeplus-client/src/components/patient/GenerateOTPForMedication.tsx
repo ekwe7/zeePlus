@@ -10,7 +10,10 @@ export function GenerateOTPForMedication() {
 
   return (
     <div>
-      <PageHeader title="Generate OTP" subtitle="Get a one-time code to collect your medication." />
+      <PageHeader
+        title="Generate OTP"
+        subtitle="Get a one-time code to collect your medication."
+      />
       <Card className="max-w-xl">
         <CardContent className="grid gap-4 p-6">
           {!otp ? (
@@ -29,13 +32,20 @@ export function GenerateOTPForMedication() {
                 <div className="text-xs uppercase tracking-wider text-muted-foreground">
                   Your OTP
                 </div>
-                <div className="mt-2 text-5xl font-bold tracking-[0.4em] text-primary">{otp}</div>
+                <div className="mt-2 text-5xl font-bold tracking-[0.4em] text-primary">
+                  {otp}
+                </div>
                 <div className="mt-2 text-xs text-muted-foreground">
-                  Expires at {expiresAt && new Date(expiresAt).toLocaleTimeString()} · issued{" "}
-                  {issuedAt?.toLocaleTimeString()}
+                  Expires at{" "}
+                  {expiresAt && new Date(expiresAt).toLocaleTimeString()} ·
+                  issued {issuedAt?.toLocaleTimeString()}
                 </div>
               </div>
-              <Button variant="outline" onClick={clear} className="w-fit mx-auto">
+              <Button
+                variant="outline"
+                onClick={clear}
+                className="w-fit mx-auto"
+              >
                 Clear
               </Button>
             </div>

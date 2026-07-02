@@ -26,7 +26,10 @@ export function PlanEligibilityChecker() {
 
   return (
     <div>
-      <PageHeader title="Plan Eligibility" subtitle="Check coverage for a patient." />
+      <PageHeader
+        title="Plan Eligibility"
+        subtitle="Check coverage for a patient."
+      />
       <Card className="max-w-xl">
         <CardContent className="grid gap-3 p-6">
           <Select onValueChange={handlePatientSelect}>
@@ -48,7 +51,9 @@ export function PlanEligibilityChecker() {
               <div className="font-semibold">
                 {result.plan} — {result.coverage}%
               </div>
-              <div className="text-sm text-muted-foreground">{result.message}</div>
+              <div className="text-sm text-muted-foreground">
+                {result.message}
+              </div>
             </div>
           )}
         </CardContent>

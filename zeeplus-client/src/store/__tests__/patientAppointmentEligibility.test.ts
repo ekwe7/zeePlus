@@ -37,13 +37,18 @@ const appointmentArb = (patientId?: string) =>
     patientId: patientId !== undefined ? fc.constant(patientId) : fc.uuid(),
     patientName: fc.string({ minLength: 1, maxLength: 50 }),
     doctorId: fc.option(fc.uuid(), { nil: undefined }),
-    doctorName: fc.option(fc.string({ minLength: 1, maxLength: 50 }), { nil: undefined }),
+    doctorName: fc.option(fc.string({ minLength: 1, maxLength: 50 }), {
+      nil: undefined,
+    }),
     date: fc.constant("2025-01-01"),
     time: fc.constant("10:00"),
     reason: fc.string({ minLength: 1, maxLength: 100 }),
-    status: fc.constantFrom("pending", "confirmed", "completed", "cancelled") as fc.Arbitrary<
-      "pending" | "confirmed" | "completed" | "cancelled"
-    >,
+    status: fc.constantFrom(
+      "pending",
+      "confirmed",
+      "completed",
+      "cancelled",
+    ) as fc.Arbitrary<"pending" | "confirmed" | "completed" | "cancelled">,
   });
 
 // Arbitrary for a valid patient CreateUserPayload
@@ -72,7 +77,8 @@ describe("Property 1: Patient appointment filtering", () => {
           resetAppointmentStore();
 
           // Populate the store
-          const { add, getPatientAppointments } = useAppointmentStore.getState();
+          const { add, getPatientAppointments } =
+            useAppointmentStore.getState();
           for (const apt of appointments) {
             add(apt as Appointment);
           }
@@ -112,7 +118,8 @@ describe("Property 2: Appointment add round-trip", () => {
         return fc.sample(aptArb, 1).every((apt) => {
           resetAppointmentStore();
 
-          const { add, getPatientAppointments } = useAppointmentStore.getState();
+          const { add, getPatientAppointments } =
+            useAppointmentStore.getState();
           add(apt as Appointment);
 
           const result = getPatientAppointments(patientId);
@@ -134,19 +141,24 @@ describe("Property 3: Admin sees all appointments", () => {
 
   it("getAdminAppointments returns every appointment regardless of patientId", () => {
     fc.assert(
-      fc.property(fc.array(appointmentArb(), { minLength: 0, maxLength: 20 }), (appointments) => {
-        resetAppointmentStore();
+      fc.property(
+        fc.array(appointmentArb(), { minLength: 0, maxLength: 20 }),
+        (appointments) => {
+          resetAppointmentStore();
 
-        const { add, getAdminAppointments } = useAppointmentStore.getState();
-        for (const apt of appointments) {
-          add(apt as Appointment);
-        }
+          const { add, getAdminAppointments } = useAppointmentStore.getState();
+          for (const apt of appointments) {
+            add(apt as Appointment);
+          }
 
-        const result = getAdminAppointments();
+          const result = getAdminAppointments();
 
-        // All added appointments must appear in admin view
-        return appointments.every((apt) => result.some((r) => r.id === apt.id));
-      }),
+          // All added appointments must appear in admin view
+          return appointments.every((apt) =>
+            result.some((r) => r.id === apt.id),
+          );
+        },
+      ),
       { numRuns: 100 },
     );
   });
@@ -198,7 +210,8 @@ describe("Property 5: Plan update round-trip", () => {
         resetUserAccountsStore();
 
         // Create a patient first
-        const { createUser, updateEligibilityPlan } = useUserAccountsStore.getState();
+        const { createUser, updateEligibilityPlan } =
+          useUserAccountsStore.getState();
         const email = `patient-${Date.now()}-${Math.random()}@test.com`;
         createUser({
           name: "Test Patient",
@@ -208,13 +221,17 @@ describe("Property 5: Plan update round-trip", () => {
           createdBy: "admin-seed",
         });
 
-        const patient = useUserAccountsStore.getState().users.find((u) => u.email === email);
+        const patient = useUserAccountsStore
+          .getState()
+          .users.find((u) => u.email === email);
         if (!patient) return false;
 
         const updateResult = updateEligibilityPlan(patient.id, plan);
         if (!updateResult.success) return false;
 
-        const updated = useUserAccountsStore.getState().users.find((u) => u.id === patient.id);
+        const updated = useUserAccountsStore
+          .getState()
+          .users.find((u) => u.id === patient.id);
         return updated?.eligibilityPlan === plan;
       }),
       { numRuns: 100 },
@@ -240,7 +257,8 @@ describe("Property 6: Invalid plan values are rejected", () => {
           resetUserAccountsStore();
 
           // Create a patient to have a valid userId
-          const { createUser, updateEligibilityPlan } = useUserAccountsStore.getState();
+          const { createUser, updateEligibilityPlan } =
+            useUserAccountsStore.getState();
           const email = `patient-${Date.now()}-${Math.random()}@test.com`;
           createUser({
             name: "Test Patient",
@@ -250,7 +268,9 @@ describe("Property 6: Invalid plan values are rejected", () => {
             createdBy: "admin-seed",
           });
 
-          const patient = useUserAccountsStore.getState().users.find((u) => u.email === email);
+          const patient = useUserAccountsStore
+            .getState()
+            .users.find((u) => u.email === email);
           if (!patient) return false;
 
           const originalPlan = patient.eligibilityPlan;
@@ -299,7 +319,9 @@ describe("Unit: createUser non-patient role", () => {
       role: "doctor",
       createdBy: "admin-seed",
     });
-    const user = useUserAccountsStore.getState().users.find((u) => u.email === "drsmith@test.com");
+    const user = useUserAccountsStore
+      .getState()
+      .users.find((u) => u.email === "drsmith@test.com");
     expect(user).toBeDefined();
     expect(user?.eligibilityPlan).toBeUndefined();
   });

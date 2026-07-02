@@ -16,7 +16,10 @@ export function DiseaseMedication() {
   const meds = DB[disease] ?? null;
   return (
     <div>
-      <PageHeader title="Disease → Medication" subtitle="Quick reference for common conditions." />
+      <PageHeader
+        title="Disease → Medication"
+        subtitle="Quick reference for common conditions."
+      />
       <Card className="max-w-xl">
         <CardContent className="grid gap-3 p-6">
           <Label>Disease</Label>
@@ -36,7 +39,9 @@ export function DiseaseMedication() {
             </ul>
           )}
           {disease && !meds && (
-            <p className="text-sm text-muted-foreground">No suggestions for "{disease}".</p>
+            <p className="text-sm text-muted-foreground">
+              No suggestions for "{disease}".
+            </p>
           )}
         </CardContent>
       </Card>

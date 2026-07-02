@@ -12,7 +12,9 @@ export function VerifyAppointmentCode() {
   const [result, setResult] = useState<string | null>(null);
 
   const verify = () => {
-    const match = appointments.find((a) => a.code.toLowerCase() === code.toLowerCase());
+    const match = appointments.find(
+      (a) => a.code.toLowerCase() === code.toLowerCase(),
+    );
     if (match) {
       setResult(`✔ Valid — ${match.patientName}, ${match.date} ${match.time}`);
       toast.success("Code verified");
@@ -30,12 +32,18 @@ export function VerifyAppointmentCode() {
       />
       <Card className="max-w-xl">
         <CardContent className="grid gap-3 p-6">
-          <Input value={code} onChange={(e) => setCode(e.target.value)} placeholder="APT-1024" />
+          <Input
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            placeholder="APT-1024"
+          />
           <Button className="w-fit" onClick={verify}>
             Verify
           </Button>
           {result && (
-            <div className="rounded-md border border-border bg-muted/40 p-3 text-sm">{result}</div>
+            <div className="rounded-md border border-border bg-muted/40 p-3 text-sm">
+              {result}
+            </div>
           )}
         </CardContent>
       </Card>

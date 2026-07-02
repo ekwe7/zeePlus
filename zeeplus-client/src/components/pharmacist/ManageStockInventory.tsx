@@ -30,7 +30,9 @@ export function ManageStockInventory() {
                     <div className="font-semibold">
                       {i.stock} {i.unit}
                     </div>
-                    <div className="text-xs text-muted-foreground">threshold {i.threshold}</div>
+                    <div className="text-xs text-muted-foreground">
+                      threshold {i.threshold}
+                    </div>
                   </div>
                   <Button
                     size="sm"

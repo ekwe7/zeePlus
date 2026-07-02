@@ -8,7 +8,13 @@ import { ROLE_DASHBOARD } from "@/constants/roles";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 
 const schema = z.object({
   email: z.string().email("Enter a valid email address"),
@@ -30,7 +36,11 @@ export function SignInPage() {
 
   const onSubmit = (data: FormValues) => {
     setServerError(null);
-    const result = login({ email: data.email, password: data.password, allowAdmin: false });
+    const result = login({
+      email: data.email,
+      password: data.password,
+      allowAdmin: false,
+    });
     if (!result.success) {
       setServerError(result.error ?? "Sign in failed.");
       return;
@@ -52,8 +62,17 @@ export function SignInPage() {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-1">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="you@example.com" {...register("email")} />
-              {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
+              <Input
+                id="email"
+                type="email"
+                placeholder="you@example.com"
+                {...register("email")}
+              />
+              {errors.email && (
+                <p className="text-xs text-destructive">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
             <div className="space-y-1">
               <Label htmlFor="password">Password</Label>
@@ -64,7 +83,9 @@ export function SignInPage() {
                 {...register("password")}
               />
               {errors.password && (
-                <p className="text-xs text-destructive">{errors.password.message}</p>
+                <p className="text-xs text-destructive">
+                  {errors.password.message}
+                </p>
               )}
             </div>
             {serverError && (
@@ -78,13 +99,19 @@ export function SignInPage() {
           </form>
           <p className="mt-4 text-center text-sm text-muted-foreground">
             New patient?{" "}
-            <Link to="/register" className="text-primary underline-offset-4 hover:underline">
+            <Link
+              to="/register"
+              className="text-primary underline-offset-4 hover:underline"
+            >
               Get started
             </Link>
           </p>
           <p className="mt-2 text-center text-sm text-muted-foreground">
             Admin?{" "}
-            <Link to="/admin/auth" className="text-primary underline-offset-4 hover:underline">
+            <Link
+              to="/admin/auth"
+              className="text-primary underline-offset-4 hover:underline"
+            >
               Admin portal
             </Link>
           </p>

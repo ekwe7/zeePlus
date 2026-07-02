@@ -25,7 +25,9 @@ export function Header() {
           <>
             <div className="text-right text-sm">
               <div className="font-medium">{name}</div>
-              <div className="text-xs text-muted-foreground">{ROLE_LABELS[role]}</div>
+              <div className="text-xs text-muted-foreground">
+                {ROLE_LABELS[role]}
+              </div>
             </div>
             <Button variant="outline" size="sm" onClick={handleLogout}>
               Sign out

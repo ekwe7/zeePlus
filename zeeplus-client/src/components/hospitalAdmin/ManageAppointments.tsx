@@ -5,7 +5,10 @@ import { Button } from "@/components/ui/button";
 import { useAppointment } from "@/hooks/useAppointment";
 import { toast } from "sonner";
 
-const statusVariants: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
+const statusVariants: Record<
+  string,
+  "default" | "secondary" | "destructive" | "outline"
+> = {
   PENDING: "secondary",
   CONFIRMED: "default",
   COMPLETED: "outline",
@@ -17,10 +20,15 @@ export function ManageAppointments() {
   const { appointments, update, remove } = useAppointment();
   return (
     <div>
-      <PageHeader title="Manage Appointments" subtitle="Approve, complete, or remove bookings." />
+      <PageHeader
+        title="Manage Appointments"
+        subtitle="Approve, complete, or remove bookings."
+      />
       <div className="grid gap-3">
         {appointments.length === 0 ? (
-          <p className="text-muted-foreground text-center py-10">No appointments found.</p>
+          <p className="text-muted-foreground text-center py-10">
+            No appointments found.
+          </p>
         ) : (
           appointments.map((a) => (
             <Card key={a.id}>

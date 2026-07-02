@@ -7,7 +7,10 @@ import { useAuthStore } from "@/store/authStore";
 import { useUserAccountsStore } from "@/store/userAccountsStore";
 import { toast } from "sonner";
 
-const variants: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
+const variants: Record<
+  string,
+  "default" | "secondary" | "destructive" | "outline"
+> = {
   confirmed: "default",
   pending: "secondary",
   completed: "outline",
@@ -23,9 +26,14 @@ export function AppointmentList() {
 
   return (
     <div>
-      <PageHeader title="My Appointments" subtitle="Track and manage your visits." />
+      <PageHeader
+        title="My Appointments"
+        subtitle="Track and manage your visits."
+      />
       <div className="grid gap-3">
-        {appointments.length === 0 && <p className="text-muted-foreground">No appointments yet.</p>}
+        {appointments.length === 0 && (
+          <p className="text-muted-foreground">No appointments yet.</p>
+        )}
         {appointments.map((a) => (
           <Card key={a.id}>
             <CardContent className="flex flex-wrap items-center justify-between gap-3 p-5">
@@ -37,7 +45,9 @@ export function AppointmentList() {
                 <div className="mt-1 text-sm text-muted-foreground">
                   {a.date} at {a.time} · {a.reason}
                 </div>
-                {a.doctorName && <div className="text-sm">Doctor: {a.doctorName}</div>}
+                {a.doctorName && (
+                  <div className="text-sm">Doctor: {a.doctorName}</div>
+                )}
               </div>
               {a.status !== "cancelled" && a.status !== "completed" && (
                 <Button

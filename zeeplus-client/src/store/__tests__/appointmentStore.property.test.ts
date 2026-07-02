@@ -21,7 +21,9 @@ function resetStore() {
 // Arbitraries
 
 /** Generates a non-empty alphanumeric patient ID string */
-const patientIdArb = fc.stringMatching(/^[a-z0-9]{1,12}$/).filter((s) => s.length > 0);
+const patientIdArb = fc
+  .stringMatching(/^[a-z0-9]{1,12}$/)
+  .filter((s) => s.length > 0);
 
 /** Generates a valid AppointmentStatus */
 const statusArb = fc.constantFrom(
@@ -39,7 +41,9 @@ function appointmentArb(patientId: string): fc.Arbitrary<Appointment> {
     patientId: fc.constant(patientId),
     patientName: fc.string({ minLength: 1, maxLength: 30 }),
     doctorId: fc.option(fc.uuid(), { nil: undefined }),
-    doctorName: fc.option(fc.string({ minLength: 1, maxLength: 30 }), { nil: undefined }),
+    doctorName: fc.option(fc.string({ minLength: 1, maxLength: 30 }), {
+      nil: undefined,
+    }),
     date: fc.constant("2025-01-01"),
     time: fc.constant("09:00"),
     reason: fc.string({ minLength: 1, maxLength: 100 }),
@@ -48,7 +52,9 @@ function appointmentArb(patientId: string): fc.Arbitrary<Appointment> {
 }
 
 /** Generates a list of appointments for a given patientId (0–5 items) */
-function appointmentsForPatientArb(patientId: string): fc.Arbitrary<Appointment[]> {
+function appointmentsForPatientArb(
+  patientId: string,
+): fc.Arbitrary<Appointment[]> {
   return fc.array(appointmentArb(patientId), { minLength: 0, maxLength: 5 });
 }
 
@@ -76,51 +82,70 @@ describe("appointmentStore — Property 1: Patient appointment filtering", () =>
           const store = useAppointmentStore.getState();
 
           // Build appointments for patient A
-          const aptsA: Appointment[] = Array.from({ length: countA }, (_, i) => ({
-            id: `a-${patientA}-${i}`,
-            code: `APT-${1000 + i}`,
-            patientId: patientA,
-            patientName: `Patient A ${i}`,
-            date: "2025-01-01",
-            time: "09:00",
-            reason: "checkup",
-            status: "pending" as const,
-          }));
+          const aptsA: Appointment[] = Array.from(
+            { length: countA },
+            (_, i) => ({
+              id: `a-${patientA}-${i}`,
+              code: `APT-${1000 + i}`,
+              patientId: patientA,
+              patientName: `Patient A ${i}`,
+              date: "2025-01-01",
+              time: "09:00",
+              reason: "checkup",
+              status: "pending" as const,
+            }),
+          );
 
           // Build appointments for patient B
-          const aptsB: Appointment[] = Array.from({ length: countB }, (_, i) => ({
-            id: `b-${patientB}-${i}`,
-            code: `APT-${2000 + i}`,
-            patientId: patientB,
-            patientName: `Patient B ${i}`,
-            date: "2025-01-02",
-            time: "10:00",
-            reason: "follow-up",
-            status: "confirmed" as const,
-          }));
+          const aptsB: Appointment[] = Array.from(
+            { length: countB },
+            (_, i) => ({
+              id: `b-${patientB}-${i}`,
+              code: `APT-${2000 + i}`,
+              patientId: patientB,
+              patientName: `Patient B ${i}`,
+              date: "2025-01-02",
+              time: "10:00",
+              reason: "follow-up",
+              status: "confirmed" as const,
+            }),
+          );
 
           // Add all appointments to the store
           [...aptsA, ...aptsB].forEach((apt) => store.add(apt));
 
           // Query for patient A
-          const resultA = useAppointmentStore.getState().getPatientAppointments(patientA);
+          const resultA = useAppointmentStore
+            .getState()
+            .getPatientAppointments(patientA);
 
           // All returned appointments must belong to patient A
-          const allBelongToA = resultA.every((apt) => apt.patientId === patientA);
+          const allBelongToA = resultA.every(
+            (apt) => apt.patientId === patientA,
+          );
           // No appointment from patient B should appear
           const noBFromA = resultA.every((apt) => apt.patientId !== patientB);
           // The count must match what was added for patient A
           const correctCount = resultA.length === countA;
 
           // Query for patient B
-          const resultB = useAppointmentStore.getState().getPatientAppointments(patientB);
+          const resultB = useAppointmentStore
+            .getState()
+            .getPatientAppointments(patientB);
 
-          const allBelongToB = resultB.every((apt) => apt.patientId === patientB);
+          const allBelongToB = resultB.every(
+            (apt) => apt.patientId === patientB,
+          );
           const noAFromB = resultB.every((apt) => apt.patientId !== patientA);
           const correctCountB = resultB.length === countB;
 
           return (
-            allBelongToA && noBFromA && correctCount && allBelongToB && noAFromB && correctCountB
+            allBelongToA &&
+            noBFromA &&
+            correctCount &&
+            allBelongToB &&
+            noAFromB &&
+            correctCountB
           );
         },
       ),
@@ -157,7 +182,9 @@ describe("appointmentStore — Property 1: Patient appointment filtering", () =>
           });
 
           // targetPatient has no appointments — must get empty list
-          const result = useAppointmentStore.getState().getPatientAppointments(targetPatient);
+          const result = useAppointmentStore
+            .getState()
+            .getPatientAppointments(targetPatient);
           return result.length === 0;
         },
       ),
@@ -183,47 +210,56 @@ describe("appointmentStore — Property 2: Appointment add round-trip", () => {
   it("getPatientAppointments includes the appointment immediately after add", () => {
     // Feature: patient-appointment-eligibility, Property 2: Appointment add round-trip
     fc.assert(
-      fc.property(patientIdArb, fc.integer({ min: 0, max: 4 }), (patientId, preExistingCount) => {
-        resetStore();
+      fc.property(
+        patientIdArb,
+        fc.integer({ min: 0, max: 4 }),
+        (patientId, preExistingCount) => {
+          resetStore();
 
-        const store = useAppointmentStore.getState();
+          const store = useAppointmentStore.getState();
 
-        // Optionally seed some pre-existing appointments for the same patient
-        const preExisting: Appointment[] = Array.from({ length: preExistingCount }, (_, i) => ({
-          id: `pre-${patientId}-${i}`,
-          code: `APT-${5000 + i}`,
-          patientId,
-          patientName: `Patient ${patientId}`,
-          date: "2025-01-01",
-          time: "08:00",
-          reason: "pre-existing",
-          status: "pending" as const,
-        }));
-        preExisting.forEach((apt) => store.add(apt));
+          // Optionally seed some pre-existing appointments for the same patient
+          const preExisting: Appointment[] = Array.from(
+            { length: preExistingCount },
+            (_, i) => ({
+              id: `pre-${patientId}-${i}`,
+              code: `APT-${5000 + i}`,
+              patientId,
+              patientName: `Patient ${patientId}`,
+              date: "2025-01-01",
+              time: "08:00",
+              reason: "pre-existing",
+              status: "pending" as const,
+            }),
+          );
+          preExisting.forEach((apt) => store.add(apt));
 
-        // The new appointment to add
-        const newApt: Appointment = {
-          id: `new-${patientId}`,
-          code: "APT-9999",
-          patientId,
-          patientName: `Patient ${patientId}`,
-          date: "2025-06-15",
-          time: "14:30",
-          reason: "new visit",
-          status: "pending" as const,
-        };
+          // The new appointment to add
+          const newApt: Appointment = {
+            id: `new-${patientId}`,
+            code: "APT-9999",
+            patientId,
+            patientName: `Patient ${patientId}`,
+            date: "2025-06-15",
+            time: "14:30",
+            reason: "new visit",
+            status: "pending" as const,
+          };
 
-        useAppointmentStore.getState().add(newApt);
+          useAppointmentStore.getState().add(newApt);
 
-        const results = useAppointmentStore.getState().getPatientAppointments(patientId);
+          const results = useAppointmentStore
+            .getState()
+            .getPatientAppointments(patientId);
 
-        // The newly added appointment must appear in the results
-        const found = results.some((apt) => apt.id === newApt.id);
-        // The total count must be preExistingCount + 1
-        const correctCount = results.length === preExistingCount + 1;
+          // The newly added appointment must appear in the results
+          const found = results.some((apt) => apt.id === newApt.id);
+          // The total count must be preExistingCount + 1
+          const correctCount = results.length === preExistingCount + 1;
 
-        return found && correctCount;
-      }),
+          return found && correctCount;
+        },
+      ),
       { numRuns: 100 },
     );
   });
@@ -242,7 +278,9 @@ describe("appointmentStore — Property 2: Appointment add round-trip", () => {
 
           useAppointmentStore.getState().add(aptWithPatient);
 
-          const results = useAppointmentStore.getState().getPatientAppointments(patientId);
+          const results = useAppointmentStore
+            .getState()
+            .getPatientAppointments(patientId);
 
           // The appointment must be present and its fields must be intact
           const match = results.find((r) => r.id === aptWithPatient.id);
@@ -282,7 +320,10 @@ describe("appointmentStore — Property 3: Admin sees all appointments", () => {
         // Generate 1–5 distinct patient IDs
         fc.array(patientIdArb, { minLength: 1, maxLength: 5 }),
         // For each patient, generate 0–4 appointments
-        fc.array(fc.integer({ min: 0, max: 4 }), { minLength: 1, maxLength: 5 }),
+        fc.array(fc.integer({ min: 0, max: 4 }), {
+          minLength: 1,
+          maxLength: 5,
+        }),
         (patientIds, counts) => {
           resetStore();
 
@@ -313,13 +354,17 @@ describe("appointmentStore — Property 3: Admin sees all appointments", () => {
             });
           });
 
-          const adminResult = useAppointmentStore.getState().getAdminAppointments();
+          const adminResult = useAppointmentStore
+            .getState()
+            .getAdminAppointments();
 
           // The admin view must contain exactly as many appointments as were added
           const correctCount = adminResult.length === allAdded.length;
 
           // Every added appointment must appear in the admin result
-          const allPresent = allAdded.every((added) => adminResult.some((r) => r.id === added.id));
+          const allPresent = allAdded.every((added) =>
+            adminResult.some((r) => r.id === added.id),
+          );
 
           return correctCount && allPresent;
         },
@@ -367,7 +412,9 @@ describe("appointmentStore — Property 3: Admin sees all appointments", () => {
 
           appointments.forEach((apt) => store.add(apt));
 
-          const adminResult = useAppointmentStore.getState().getAdminAppointments();
+          const adminResult = useAppointmentStore
+            .getState()
+            .getAdminAppointments();
 
           // Admin must see every appointment that was added
           const allPresent = appointments.every((added) =>

@@ -47,7 +47,9 @@ export function Sidebar() {
 
   return (
     <aside className="w-60 shrink-0 border-r border-sidebar-border bg-sidebar p-4 text-sidebar-foreground">
-      <div className="mb-4 px-2 text-xs uppercase tracking-wider opacity-70">Menu</div>
+      <div className="mb-4 px-2 text-xs uppercase tracking-wider opacity-70">
+        Menu
+      </div>
       <nav className="flex flex-col gap-1">
         {items.map((it) => {
           const active = location.pathname === it.to;

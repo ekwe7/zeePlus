@@ -36,7 +36,10 @@ export function BookAppointment() {
 
   return (
     <div>
-      <PageHeader title="Book Appointment" subtitle="Schedule a visit with our specialists." />
+      <PageHeader
+        title="Book Appointment"
+        subtitle="Schedule a visit with our specialists."
+      />
       <Card className="max-w-2xl">
         <CardContent className="p-6">
           <form onSubmit={submit} className="grid gap-4">

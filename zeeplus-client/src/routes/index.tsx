@@ -31,9 +31,12 @@ function Index() {
         <div className="mx-auto mb-6 grid h-16 w-16 place-items-center rounded-2xl bg-primary text-primary-foreground text-3xl font-bold">
           M
         </div>
-        <h1 className="text-5xl font-semibold tracking-tight">Healthcare, simplified.</h1>
+        <h1 className="text-5xl font-semibold tracking-tight">
+          Healthcare, simplified.
+        </h1>
         <p className="mt-4 text-lg text-muted-foreground">
-          MediFlow connects patients, doctors, and pharmacists on one secure platform.
+          MediFlow connects patients, doctors, and pharmacists on one secure
+          platform.
         </p>
         <div className="mt-8 flex justify-center gap-3">
           <Link to="/register">

@@ -4,7 +4,10 @@ import { Badge } from "@/components/ui/badge";
 import { useReports } from "@/hooks/useReports";
 import { formatCurrency } from "@/utils/reportFormatter";
 
-const tone: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
+const tone: Record<
+  string,
+  "default" | "secondary" | "destructive" | "outline"
+> = {
   APPROVED: "default",
   PENDING: "secondary",
   REJECTED: "destructive",

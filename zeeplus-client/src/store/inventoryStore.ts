@@ -42,6 +42,8 @@ export const useInventoryStore = create<State>((set) => ({
   items: seed,
   add: (i) => set((s) => ({ items: [i, ...s.items] })),
   update: (id, patch) =>
-    set((s) => ({ items: s.items.map((x) => (x.id === id ? { ...x, ...patch } : x)) })),
+    set((s) => ({
+      items: s.items.map((x) => (x.id === id ? { ...x, ...patch } : x)),
+    })),
   remove: (id) => set((s) => ({ items: s.items.filter((x) => x.id !== id) })),
 }));

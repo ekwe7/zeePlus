@@ -10,11 +10,18 @@ export function UpgradePrescription() {
   const [id, setId] = useState("");
   return (
     <div>
-      <PageHeader title="Upgrade Prescription" subtitle="Modify dosage or change medication." />
+      <PageHeader
+        title="Upgrade Prescription"
+        subtitle="Modify dosage or change medication."
+      />
       <Card className="max-w-xl">
         <CardContent className="grid gap-3 p-6">
           <Label>Prescription ID</Label>
-          <Input value={id} onChange={(e) => setId(e.target.value)} placeholder="RX-…" />
+          <Input
+            value={id}
+            onChange={(e) => setId(e.target.value)}
+            placeholder="RX-…"
+          />
           <Button
             className="w-fit"
             onClick={() => toast.success(`Prescription ${id || "—"} upgraded`)}
