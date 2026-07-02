@@ -25,7 +25,10 @@ export function AssignDoctorToPatient() {
 
   return (
     <div>
-      <PageHeader title="Assign Doctor" subtitle="Match patients to the right specialist." />
+      <PageHeader
+        title="Assign Doctor"
+        subtitle="Match patients to the right specialist."
+      />
       <div className="grid gap-3">
         {unassigned.map((a) => (
           <Card key={a.id}>
@@ -46,7 +49,9 @@ export function AssignDoctorToPatient() {
                   </SelectTrigger>
                   <SelectContent>
                     {doctors.length === 0 ? (
-                      <SelectItem value="none" disabled>No doctors found</SelectItem>
+                      <SelectItem value="none" disabled>
+                        No doctors found
+                      </SelectItem>
                     ) : (
                       doctors.map((d) => (
                         <SelectItem key={d.id} value={d.id}>
@@ -63,7 +68,11 @@ export function AssignDoctorToPatient() {
                     if (!docId) return;
                     const doc = doctors.find((d) => d.id === docId);
                     if (!doc) return;
-                    update(a.id, { doctorId: doc.id, doctorName: doc.name, status: "CONFIRMED" });
+                    update(a.id, {
+                      doctorId: doc.id,
+                      doctorName: doc.name,
+                      status: "CONFIRMED",
+                    });
                     toast.success(`Assigned to ${doc.name}`);
                   }}
                 >
@@ -74,7 +83,9 @@ export function AssignDoctorToPatient() {
           </Card>
         ))}
         {unassigned.length === 0 && (
-          <p className="text-muted-foreground">All appointments have an assigned doctor.</p>
+          <p className="text-muted-foreground">
+            All appointments have an assigned doctor.
+          </p>
         )}
       </div>
     </div>

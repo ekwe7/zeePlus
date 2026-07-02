@@ -36,5 +36,7 @@ interface State {
 export const useReportStore = create<State>((set) => ({
   claims: seedClaims,
   updateClaim: (id, patch) =>
-    set((s) => ({ claims: s.claims.map((c) => (c.id === id ? { ...c, ...patch } : c)) })),
+    set((s) => ({
+      claims: s.claims.map((c) => (c.id === id ? { ...c, ...patch } : c)),
+    })),
 }));

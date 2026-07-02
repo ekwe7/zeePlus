@@ -33,7 +33,8 @@ export function OTPInput({ length = 6, value, onChange }: Props) {
           value={chars[i]?.trim() ?? ""}
           onChange={(e) => update(i, e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === "Backspace" && !chars[i]?.trim() && i > 0) refs.current[i - 1]?.focus();
+            if (e.key === "Backspace" && !chars[i]?.trim() && i > 0)
+              refs.current[i - 1]?.focus();
           }}
           className="h-12 w-12 rounded-md border border-input bg-background text-center text-lg font-semibold focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/40"
         />

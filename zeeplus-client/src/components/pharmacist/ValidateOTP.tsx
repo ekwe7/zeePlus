@@ -9,7 +9,10 @@ export function ValidateOTP() {
   const [code, setCode] = useState("");
   return (
     <div>
-      <PageHeader title="Validate OTP" subtitle="Confirm the patient's one-time code." />
+      <PageHeader
+        title="Validate OTP"
+        subtitle="Confirm the patient's one-time code."
+      />
       <Card className="max-w-xl">
         <CardContent className="grid gap-4 p-6">
           <OTPInput value={code} onChange={setCode} />

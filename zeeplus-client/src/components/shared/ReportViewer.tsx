@@ -17,7 +17,11 @@ export function ReportViewer() {
       <PageHeader
         title="Reports"
         subtitle="Operational and financial summaries."
-        actions={<Button onClick={() => toast.success("Report exported")}>Export PDF</Button>}
+        actions={
+          <Button onClick={() => toast.success("Report exported")}>
+            Export PDF
+          </Button>
+        }
       />
       <div className="grid gap-4 sm:grid-cols-3">
         <StatCard label="Total Claims" value={claims.length} />

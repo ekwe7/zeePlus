@@ -11,9 +11,14 @@ export function ManageFraudAlerts() {
   const flagged = claims.filter((c) => c.status === "FLAGGED");
   return (
     <div>
-      <PageHeader title="Fraud Alerts" subtitle="Investigate suspicious claims." />
+      <PageHeader
+        title="Fraud Alerts"
+        subtitle="Investigate suspicious claims."
+      />
       <div className="grid gap-3">
-        {flagged.length === 0 && <p className="text-muted-foreground">No flagged claims.</p>}
+        {flagged.length === 0 && (
+          <p className="text-muted-foreground">No flagged claims.</p>
+        )}
         {flagged.map((c) => (
           <Card key={c.id}>
             <CardContent className="flex flex-wrap items-center justify-between gap-3 p-5">

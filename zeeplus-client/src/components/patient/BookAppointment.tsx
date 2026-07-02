@@ -19,7 +19,7 @@ export function BookAppointment() {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    const code = "APT-" + Math.floor(1000 + Math.random() * 9000);
+    const code = "HMO-APT-" + Math.floor(10000 + Math.random() * 90000);
     add({
       id: crypto.randomUUID(),
       code,
@@ -36,7 +36,10 @@ export function BookAppointment() {
 
   return (
     <div>
-      <PageHeader title="Book Appointment" subtitle="Schedule a visit with our specialists." />
+      <PageHeader
+        title="Book Appointment"
+        subtitle="Schedule a visit with our specialists."
+      />
       <Card className="max-w-2xl">
         <CardContent className="p-6">
           <form onSubmit={submit} className="grid gap-4">

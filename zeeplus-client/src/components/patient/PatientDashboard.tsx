@@ -13,7 +13,10 @@ export const PatientDashboard = () => {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Patient Dashboard" subtitle="Welcome back! Here is your health overview." />
+      <PageHeader
+        title="Patient Dashboard"
+        subtitle="Welcome back! Here is your health overview."
+      />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <StatCard label="Total Appointments" value={appointments.length} />

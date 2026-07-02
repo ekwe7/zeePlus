@@ -6,7 +6,10 @@ export function ManageDrugDistribution() {
   const { items } = useInventory();
   return (
     <div>
-      <PageHeader title="Drug Distribution" subtitle="Allocate stock across wards & branches." />
+      <PageHeader
+        title="Drug Distribution"
+        subtitle="Allocate stock across wards & branches."
+      />
       <div className="grid gap-3 sm:grid-cols-2">
         {items.map((i) => (
           <Card key={i.id}>
@@ -18,16 +21,22 @@ export function ManageDrugDistribution() {
               <div className="mt-3 grid grid-cols-3 gap-2 text-center text-xs">
                 <div className="rounded-md bg-muted py-2">
                   Ward A<br />
-                  <span className="font-semibold">{Math.floor(i.stock * 0.4)}</span>
+                  <span className="font-semibold">
+                    {Math.floor(i.stock * 0.4)}
+                  </span>
                 </div>
                 <div className="rounded-md bg-muted py-2">
                   Ward B<br />
-                  <span className="font-semibold">{Math.floor(i.stock * 0.3)}</span>
+                  <span className="font-semibold">
+                    {Math.floor(i.stock * 0.3)}
+                  </span>
                 </div>
                 <div className="rounded-md bg-muted py-2">
                   Branch
                   <br />
-                  <span className="font-semibold">{Math.floor(i.stock * 0.3)}</span>
+                  <span className="font-semibold">
+                    {Math.floor(i.stock * 0.3)}
+                  </span>
                 </div>
               </div>
             </CardContent>

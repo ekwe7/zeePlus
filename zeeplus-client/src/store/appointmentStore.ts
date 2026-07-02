@@ -17,7 +17,9 @@ export const useAppointmentStore = create<State>((set, get) => ({
 
   update: (id, patch) =>
     set((s) => ({
-      appointments: s.appointments.map((x) => (x.id === id ? { ...x, ...patch } : x)),
+      appointments: s.appointments.map((x) =>
+        x.id === id ? { ...x, ...patch } : x,
+      ),
     })),
 
   remove: (id) =>

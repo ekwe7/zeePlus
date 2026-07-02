@@ -12,15 +12,24 @@ export function ValidateSubscription() {
   const currentUser = users.find((u) => u.email === email);
   const eligibilityPlan = currentUser?.eligibilityPlan ?? "BASIC";
 
-  const result = useMemo(() => checkEligibility(eligibilityPlan), [eligibilityPlan]);
+  const result = useMemo(
+    () => checkEligibility(eligibilityPlan),
+    [eligibilityPlan],
+  );
 
   return (
     <div>
-      <PageHeader title="Validate Subscription" subtitle="Check if your plan covers a service." />
+      <PageHeader
+        title="Validate Subscription"
+        subtitle="Check if your plan covers a service."
+      />
       <Card className="max-w-xl">
         <CardContent className="grid gap-3 p-6">
           <div className="text-sm text-muted-foreground">
-            Your plan: <span className="font-semibold text-foreground">{eligibilityPlan}</span>
+            Your plan:{" "}
+            <span className="font-semibold text-foreground">
+              {eligibilityPlan}
+            </span>
           </div>
           <div
             className={`rounded-md border p-4 ${result.eligible ? "border-success/40 bg-success/10 text-success" : "border-destructive/40 bg-destructive/10 text-destructive"}`}

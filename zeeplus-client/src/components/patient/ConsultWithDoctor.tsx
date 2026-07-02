@@ -6,9 +6,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 
 export function ConsultWithDoctor() {
-  const [messages, setMessages] = useState<{ from: "me" | "doc"; text: string }[]>([
-    { from: "doc", text: "Hello, how can I help you today?" },
-  ]);
+  const [messages, setMessages] = useState<
+    { from: "me" | "doc"; text: string }[]
+  >([{ from: "doc", text: "Hello, how can I help you today?" }]);
   const [input, setInput] = useState("");
 
   const send = () => {
@@ -18,7 +18,10 @@ export function ConsultWithDoctor() {
     setTimeout(() => {
       setMessages((m) => [
         ...m,
-        { from: "doc", text: "Thanks — I'll review and get back to you shortly." },
+        {
+          from: "doc",
+          text: "Thanks — I'll review and get back to you shortly.",
+        },
       ]);
     }, 600);
     toast.success("Message sent");
@@ -26,12 +29,18 @@ export function ConsultWithDoctor() {
 
   return (
     <div>
-      <PageHeader title="Consult Doctor" subtitle="Chat live with your assigned doctor." />
+      <PageHeader
+        title="Consult Doctor"
+        subtitle="Chat live with your assigned doctor."
+      />
       <Card className="max-w-3xl">
         <CardContent className="flex h-[480px] flex-col p-0">
           <div className="flex-1 space-y-3 overflow-y-auto p-5">
             {messages.map((m, i) => (
-              <div key={i} className={`flex ${m.from === "me" ? "justify-end" : "justify-start"}`}>
+              <div
+                key={i}
+                className={`flex ${m.from === "me" ? "justify-end" : "justify-start"}`}
+              >
                 <div
                   className={`max-w-[75%] rounded-2xl px-4 py-2 text-sm ${m.from === "me" ? "bg-primary text-primary-foreground" : "bg-muted"}`}
                 >

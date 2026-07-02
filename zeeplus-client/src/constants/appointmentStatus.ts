@@ -6,4 +6,5 @@ export const APPOINTMENT_STATUS = {
   NO_SHOW: "NO_SHOW",
 } as const;
 
-export type AppointmentStatus = (typeof APPOINTMENT_STATUS)[keyof typeof APPOINTMENT_STATUS];
+export type AppointmentStatus =
+  (typeof APPOINTMENT_STATUS)[keyof typeof APPOINTMENT_STATUS];

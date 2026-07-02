@@ -7,7 +7,13 @@ import { useAuthStore } from "@/store/authStore";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 
 const schema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -51,19 +57,39 @@ export function RegisterPage() {
             M
           </div>
           <CardTitle className="text-2xl">Create account</CardTitle>
-          <CardDescription>Register as a patient to get started</CardDescription>
+          <CardDescription>
+            Register as a patient to get started
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-1">
               <Label htmlFor="name">Full name</Label>
-              <Input id="name" type="text" placeholder="Jane Doe" {...register("name")} />
-              {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
+              <Input
+                id="name"
+                type="text"
+                placeholder="Jane Doe"
+                {...register("name")}
+              />
+              {errors.name && (
+                <p className="text-xs text-destructive">
+                  {errors.name.message}
+                </p>
+              )}
             </div>
             <div className="space-y-1">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="you@example.com" {...register("email")} />
-              {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
+              <Input
+                id="email"
+                type="email"
+                placeholder="you@example.com"
+                {...register("email")}
+              />
+              {errors.email && (
+                <p className="text-xs text-destructive">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
             <div className="space-y-1">
               <Label htmlFor="password">Password</Label>
@@ -74,7 +100,9 @@ export function RegisterPage() {
                 {...register("password")}
               />
               {errors.password && (
-                <p className="text-xs text-destructive">{errors.password.message}</p>
+                <p className="text-xs text-destructive">
+                  {errors.password.message}
+                </p>
               )}
             </div>
             {serverError && (
@@ -88,7 +116,10 @@ export function RegisterPage() {
           </form>
           <p className="mt-4 text-center text-sm text-muted-foreground">
             Already have an account?{" "}
-            <Link to="/sign-in" className="text-primary underline-offset-4 hover:underline">
+            <Link
+              to="/sign-in"
+              className="text-primary underline-offset-4 hover:underline"
+            >
               Sign in
             </Link>
           </p>
